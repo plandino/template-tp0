@@ -7,13 +7,14 @@ import java.util.List;
  */
 public class Main {
 
-    private static RegExGenerator generador = new RegExGenerator(5);
+    private static RegExGenerator generador = new RegExGenerator(3);
     private static List<String> listaDePalabras;
 
     public static void main(String[] args) {
 
-        listaDePalabras = generador.generate("..+[abcd]*a+bss?h*.", 3);
+        listaDePalabras = generador.generate(".....+[abcd]*a+bss?h*vara\\*asd*.+", 3);
         int size = listaDePalabras.size();
+
         for(int i = 0; i < size; i++){
             String palabra = listaDePalabras.get(i);
             System.out.println(palabra);
