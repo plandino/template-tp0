@@ -31,13 +31,16 @@ public class RegExGenerator {
         int minimaCantidadDeOcurrencias = 1;
 
         String[] tokens = regEx.split("(?=\\.)|(?<=\\+)|(?<=\\*)|(?<=\\?)|(?=\\[)");
-
         for( String token : tokens ){
 
             if( appendTokens ) {
                 auxString += token;
                 token = auxString;
                 appendTokens = false;
+                if(token.equals( PUNTO ) ){
+                    addCharacter(token, PUNTO );
+                    continue;
+                }
             }
 
             System.out.println("El token es: " + token);
@@ -50,15 +53,22 @@ public class RegExGenerator {
                 lastChar = token.substring( lastCharIndex );
             }
 
-            System.out.println("lascharindex: " + lastCharIndex);
+//            if( token.contains( PUNTO )  ) {
+//                addCharacter( PUNTO, null);
+//                addCharacter( lastChar, null );
+//            }
+
+            System.out.println("LastCharIndex: " + lastCharIndex);
+            System.out.println("LastChar: " + lastChar);
+
 
             if( isBackSlashed(token, lastCharIndex) ) {
+                System.out.println("Es Backslahsed");
+
                 auxString = token.replace( CONTRA_BARRA, "" );
                 appendTokens = true;
             } else {
 
-
-                token = token.substring( 0, lastCharIndex );
                 String set = null;
 
                 if( isASet( token ) ) {
@@ -66,6 +76,9 @@ public class RegExGenerator {
                     // TODO: Ver que no estan backslashed
                     token = token.substring( token.indexOf( "[" ) + 1, token.lastIndexOf( "]" ) );
                     set = token;
+                } else {
+                    if( token.length() > 1 )
+                        token = token.substring( 0, lastCharIndex );
                 }
                 System.out.println("El token quedo: " + token);
 
@@ -99,39 +112,59 @@ public class RegExGenerator {
 
                     default:
 
-                        addCharacter( token, set );
+                        if( ! token.equals( "" ) ) {
+                            addCharacter( token, set );
+                        }
+                        if( ! lastChar.equals( "" ) ) {
+                            addCharacter( lastChar, set);
+                        }
                         break;
                 }
             }
-
-            System.out.println("Agregue: " + lista.get(lista.size() - 1));
         }
         return lista;
     }
 
     private boolean isBackSlashed( String token, int lastCharIndex ) {
-        if( lastCharIndex > 0 ){
-            String anteUltimoChar = token.substring( lastCharIndex - 1, lastCharIndex);
-            return anteUltimoChar.equals( CONTRA_BARRA );
-        }
-        return false;
+        return token.contains( "\\");
+//        if( lastCharIndex > 0 ){
+//            String anteUltimoChar = token.substring( lastCharIndex - 1, lastCharIndex);
+//            return anteUltimoChar.equals( CONTRA_BARRA );
+//        }
+//        return false;
     }
 
     private void addCharacter( String token, String set) {
-        if( token.equals( PUNTO ) ) {
+
+        if ( set != null ) {
+            char caracter = set.charAt(random.nextInt(set.length()));
+            lista.add(String.valueOf(caracter));
+            System.out.println("Agregue: " + caracter);
+        } else if( token.equals( PUNTO ) ) {
             char caracter = ( char ) random.nextInt( TAMANIO_ASCII );
-            lista.add( String.valueOf( caracter ) );
-        } else if ( set != null ) {
-            char caracter = set.charAt( random.nextInt( set.length() ) );
-            lista.add( String.valueOf( caracter ) );
+            lista.add( "a" );
+            System.out.println("Agregue  aaa: " + caracter);
         } else {
             lista.add( token );
+            System.out.println("Agregue: " + token);
+
         }
     }
 
     // TODO: ver que no esta backslashed
     private boolean isASet( String token ) {
         return token.contains( "[" );
+    }
+
+    private boolean isReservedChar( String token ) {
+
+        boolean esPunto = ( token.equals( PUNTO ) );
+        boolean esPregunta = ( token.equals( "?" ) );
+        boolean esAsterisco = ( token.equals( "*" ) );
+
+        System.out.println("Es caracter reservado: " + (esPunto || esAsterisco || esPregunta) );
+
+        return esPunto || esAsterisco || esPregunta;
     }
 
 }

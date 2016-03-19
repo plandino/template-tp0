@@ -10,24 +10,31 @@ import static org.junit.Assert.assertTrue;
 
 public class RegExGeneratorTest {
 
-//    private boolean validate(String regEx, int numberOfResults) {
-//        RegExGenerator generator = new RegExGenerator();
-//        // TODO: Uncomment parameters
-//        List<String> results = generator.generate(/*regEx, numberOfResults*/);
-//        // force matching the beginning and the end of the strings
-//        Pattern pattern = Pattern.compile("^" + regEx + "$");
-//        return results
-//                .stream()
-//                .reduce(true,
-//                    (acc, item) -> {
-//                        Matcher matcher = pattern.matcher(item);
-//                        return acc && matcher.find();
-//                    },
-//                    (item1, item2) -> item1 && item2);
-//    }
+    private boolean validate(String regEx, int numberOfResults) {
+        RegExGenerator generator = new RegExGenerator(5);
+        // TODO: Uncomment parameters
+        List<String> results = generator.generate(regEx, numberOfResults);
+        // force matching the beginning and the end of the strings
+        Pattern pattern = Pattern.compile("^" + regEx + "$");
+
+        for(int i = 0; i < results.size(); i++){
+            String palabra = results.get(i);
+            System.out.println(palabra);
+        }
+        return results
+                .stream()
+                .reduce(true,
+                    (acc, item) -> {
+                        Matcher matcher = pattern.matcher(item);
+//                        System.out.println(results.matches("^\\@..$"));
+
+                        return acc && matcher.find();
+                    },
+                    (item1, item2) -> item1 && item2);
+    }
 
     //TODO: Uncomment these tests
-    /*
+
     @Test
     public void testAnyCharacter() {
         assertTrue(validate(".", 1));
@@ -62,6 +69,67 @@ public class RegExGeneratorTest {
     public void testCharacterSetWithQuantifiers() {
         assertTrue(validate("[abc]+", 1));
     }
-    */
+
     // TODO: Add more tests!!!
+
+
+    @Test
+    public void testAnyCharacterWithAsterisk() {
+        assertTrue(validate(".*", 1));
+    }
+
+    @Test
+    public void testLiteralWithAsterisk() {
+        assertTrue(validate("&*", 1));
+    }
+
+    @Test
+    public void testAnyCharacterWithPlus() {
+        assertTrue(validate(".*", 1));
+    }
+
+    @Test
+    public void testLiteralWithPlus() {
+        assertTrue(validate("´+", 1));
+    }
+
+    @Test
+    public void testAnyCharacterWithQuestionMark() {
+        assertTrue(validate(".?", 1));
+    }
+
+    @Test
+    public void testLiteralWithQuestionMark() {
+        assertTrue(validate("1?", 1));
+    }
+
+    @Test
+    public void testMultipleAnyCharacters() {
+        assertTrue(validate(".*.*.*", 1));
+    }
+
+    @Test
+    public void testaaaMultipleAnyaCharacters() {
+        assertTrue(validate("..5.*", 1));
+    }
+
+    @Test
+    public void testBackslashedDotWithLiteral() {
+        assertTrue(validate("\\..5.*", 1));
+    }
+
+    @Test
+    public void testBackslashedDot() {
+        assertTrue(validate("\\.", 1));
+    }
+
+    @Test
+    public void testBackslashedLiteral() {
+        assertTrue(validate("\\5", 1));
+    }
+
+    @Test
+    public void testDesesperada() {
+        assertTrue(validate("\\.6.8.2", 1));
+    }
 }
