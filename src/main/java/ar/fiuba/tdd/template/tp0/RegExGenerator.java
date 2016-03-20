@@ -1,5 +1,6 @@
 package ar.fiuba.tdd.template.tp0;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -10,8 +11,13 @@ public class RegExGenerator {
     final private int TAMANIO_ASCII = 256;
 
     private Random random;
-    private String CONTRA_BARRA = "\\";
-    private String PUNTO = ".";
+    final private String CONTRA_BARRA = "\\";
+    final private String PUNTO        = ".";
+    final private String ASTERISCO    = "*";
+    final private String MAS          = "+";
+    final private String PREGUNTA     = "?";
+    final private String CORCHETE     = "[";
+
     private String auxString = "";
 
     private boolean appendTokens = false;
@@ -31,16 +37,52 @@ public class RegExGenerator {
         int minimaCantidadDeOcurrencias = 1;
 
         String[] tokens = regEx.split("(?=\\.)|(?<=\\+)|(?<=\\*)|(?<=\\?)|(?=\\[)");
+
+        System.out.println("Los tokens quedan: ");
+        for( String token : tokens ) {
+
+            System.out.println(token);
+        }
+
         for( String token : tokens ){
 
             if( appendTokens ) {
-                auxString += token;
-                token = auxString;
+
                 appendTokens = false;
-                if(token.equals( PUNTO ) ){
-                    addCharacter(token, PUNTO );
+                if( token.equals( PUNTO ) && auxString.length() == 0 ) {
+                    addCharacter( token , PUNTO );
                     continue;
+                } else if ( token.indexOf( PUNTO ) == 0 && ! isReservedChar( Character.toString(token.charAt( token.length() - 1 )))) {
+                    addCharacter( PUNTO, PUNTO);
+                    token = token.substring( 1 );
+                } else {
+
+                    if( auxString.length() != 0 && token.equals( PUNTO ) ) {
+
+                        addCharacter( auxString , null );
+                        addCharacter( token , null );
+                        continue;
+                    } else {
+                        auxString += token;
+                        token = auxString;
+
+                    }
                 }
+
+//                if( )
+//                if(token.equals( PUNTO ) ){
+//                    if( ! auxString.equals( "") ){
+//                        addCharacter( auxString, null );
+//                        addCharacter(token, null );
+//                    } else {
+//                        addCharacter(token, PUNTO );
+//                    }
+//                    continue;
+//                } else {
+//                    auxString += token;
+//                    token = auxString;
+//                }
+
             }
 
             System.out.println("El token es: " + token);
@@ -48,7 +90,7 @@ public class RegExGenerator {
             int lastCharIndex = 1;
             String lastChar = "";
 
-            if( ! token.equals( PUNTO ) ) {
+            if( ! token.equals( PUNTO ) &&  token.length() > 1) {
                 lastCharIndex = token.length() - 1;
                 lastChar = token.substring( lastCharIndex );
             }
@@ -69,6 +111,7 @@ public class RegExGenerator {
                 appendTokens = true;
             } else {
 
+
                 String set = null;
 
                 if( isASet( token ) ) {
@@ -84,7 +127,7 @@ public class RegExGenerator {
 
                 switch ( lastChar ) {
 
-                    case "?":
+                    case PREGUNTA:
 
                         boolean agregar = random.nextBoolean();
 
@@ -92,7 +135,7 @@ public class RegExGenerator {
                             addCharacter( token, set );
                         break;
 
-                    case "*":
+                    case ASTERISCO:
 
                         cantidadDeOcurrencias = minimaCantidadDeOcurrencias + ( random.nextInt( maxLength - minimaCantidadDeOcurrencias ) );
 
@@ -101,7 +144,7 @@ public class RegExGenerator {
                         }
                         break;
 
-                    case "+":
+                    case MAS:
 
                         cantidadDeOcurrencias = 1 + ( random.nextInt( maxLength ) );
 
@@ -112,12 +155,20 @@ public class RegExGenerator {
 
                     default:
 
-                        if( ! token.equals( "" ) ) {
-                            addCharacter( token, set );
+                        if( ! token.equals( PUNTO ) ) {
+                            token += lastChar;
+                            addCharacter( token, set);
+                        } else {
+                            if( ! token.equals( "" ) ) {
+                                addCharacter( token, set );
+                            }
+                            if( ! lastChar.equals( "" ) ) {
+                                addCharacter( lastChar, set);
+                            }
+
                         }
-                        if( ! lastChar.equals( "" ) ) {
-                            addCharacter( lastChar, set);
-                        }
+//                        token += lastChar;
+//                        addCharacter( token, set);
                         break;
                 }
             }
@@ -140,14 +191,13 @@ public class RegExGenerator {
             char caracter = set.charAt(random.nextInt(set.length()));
             lista.add(String.valueOf(caracter));
             System.out.println("Agregue: " + caracter);
-        } else if( token.equals( PUNTO ) ) {
+        } else if( token.equals( PUNTO )  ) {
             char caracter = ( char ) random.nextInt( TAMANIO_ASCII );
             lista.add( "a" );
             System.out.println("Agregue  aaa: " + caracter);
         } else {
             lista.add( token );
             System.out.println("Agregue: " + token);
-
         }
     }
 
@@ -165,6 +215,18 @@ public class RegExGenerator {
         System.out.println("Es caracter reservado: " + (esPunto || esAsterisco || esPregunta) );
 
         return esPunto || esAsterisco || esPregunta;
+    }
+
+    private void primerCaracterEscapeado ( String token ) {
+        int indexPunto      = token.indexOf( PUNTO );
+        int indexPregunta   = token.indexOf( PREGUNTA );
+        int indexAsterisco  = token.indexOf( ASTERISCO );
+        int indexCorchete   = token.indexOf( CORCHETE );
+        int indexMas        = token.indexOf( MAS );
+
+//        return ( (indexAsterisco == 0 ) )
+//        if( indexAsterisco == 0 || )
+//        isReservedChar( token)
     }
 
 }
