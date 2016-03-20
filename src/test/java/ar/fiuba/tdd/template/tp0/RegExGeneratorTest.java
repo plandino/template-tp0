@@ -132,4 +132,24 @@ public class RegExGeneratorTest {
     public void testDesesperada() {
         assertTrue(validate("\\.6.8.2", 1));
     }
+
+    @Test
+    public void testComplicada() {
+        assertTrue(validate("\\.abc?.6.8.2", 1));
+    }
+
+    @Test
+    public void testEscapeandoAsterisco() {
+        assertTrue(validate("\\*abc?.6.8.2", 1));
+    }
+
+    @Test
+    public void testCojuntoQueSigueNormal() {
+        assertTrue(validate("[asvg]llld", 1));
+    }
+
+    @Test
+    public void testCojuntoQueSigueNormalConCuantificador() {
+        assertTrue(validate("[asvg]llld*", 1));
+    }
 }

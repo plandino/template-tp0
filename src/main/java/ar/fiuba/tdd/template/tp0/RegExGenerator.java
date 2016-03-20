@@ -113,64 +113,90 @@ public class RegExGenerator {
 
 
                 String set = null;
+                String continuacion = null;
+                String lastCharDeContinuacion = null;
 
                 if( isASet( token ) ) {
 
                     // TODO: Ver que no estan backslashed
+                    if( token.lastIndexOf( "]" ) + 2 >= token.length() ) {
+                        continuacion = token.substring( token.lastIndexOf( "]" ) + 1);
+                    } else {
+                        continuacion = token.substring( token.lastIndexOf( "]" ) + 1, token.length() - 1);
+                    }
+
+                    if( isReservedChar(continuacion) || continuacion.equals("")) continuacion = null;
+                    lastCharDeContinuacion = lastChar;
+
                     token = token.substring( token.indexOf( "[" ) + 1, token.lastIndexOf( "]" ) );
+                    lastChar = Character.toString(token.charAt( token.indexOf( "]" ) + 1));
                     set = token;
                 } else {
                     if( token.length() > 1 )
                         token = token.substring( 0, lastCharIndex );
                 }
                 System.out.println("El token quedo: " + token);
+                boolean primeraVez = true;
+                do {
 
-                switch ( lastChar ) {
+                    if ( ! primeraVez ){
+                        token = continuacion;
+                        set = null;
+                        continuacion = null;
+                        lastChar = lastCharDeContinuacion;
 
-                    case PREGUNTA:
+                        System.out.println("El token queasdasddo: " + token);
 
-                        boolean agregar = random.nextBoolean();
+                    }
 
-                        if( agregar )
-                            addCharacter( token, set );
-                        break;
+                    switch ( lastChar ) {
 
-                    case ASTERISCO:
+                        case PREGUNTA:
 
-                        cantidadDeOcurrencias = minimaCantidadDeOcurrencias + ( random.nextInt( maxLength - minimaCantidadDeOcurrencias ) );
+                            boolean agregar = random.nextBoolean();
 
-                        for( int i = 0; i < cantidadDeOcurrencias; i++ ) {
-                            addCharacter( token, set );
-                        }
-                        break;
+                            if( agregar )
+                                addCharacter( token, set );
+                            break;
 
-                    case MAS:
+                        case ASTERISCO:
 
-                        cantidadDeOcurrencias = 1 + ( random.nextInt( maxLength ) );
+                            cantidadDeOcurrencias = minimaCantidadDeOcurrencias + ( random.nextInt( maxLength - minimaCantidadDeOcurrencias ) );
 
-                        for( int i = 0; i < cantidadDeOcurrencias; i++ ) {
-                            addCharacter( token, set );
-                        }
-                        break;
-
-                    default:
-
-                        if( ! token.equals( PUNTO ) ) {
-                            token += lastChar;
-                            addCharacter( token, set);
-                        } else {
-                            if( ! token.equals( "" ) ) {
+                            for( int i = 0; i < cantidadDeOcurrencias; i++ ) {
                                 addCharacter( token, set );
                             }
-                            if( ! lastChar.equals( "" ) ) {
-                                addCharacter( lastChar, set);
-                            }
+                            break;
 
-                        }
+                        case MAS:
+
+                            cantidadDeOcurrencias = 1 + ( random.nextInt( maxLength ) );
+
+                            for( int i = 0; i < cantidadDeOcurrencias; i++ ) {
+                                addCharacter( token, set );
+                            }
+                            break;
+
+                        default:
+
+                            if( ! token.equals( PUNTO ) ) {
+                                token += lastChar;
+                                addCharacter( token, set);
+                            } else {
+                                if( ! token.equals( "" ) ) {
+                                    addCharacter( token, set );
+                                }
+                                if( ! lastChar.equals( "" ) ) {
+                                    addCharacter( lastChar, set);
+                                }
+
+                            }
 //                        token += lastChar;
 //                        addCharacter( token, set);
-                        break;
-                }
+                            break;
+                    }
+                    primeraVez = false;
+                } while ( continuacion != null );
             }
         }
         return lista;
@@ -211,10 +237,12 @@ public class RegExGenerator {
         boolean esPunto = ( token.equals( PUNTO ) );
         boolean esPregunta = ( token.equals( "?" ) );
         boolean esAsterisco = ( token.equals( "*" ) );
+        boolean esMas = ( token.equals( MAS ) );
+
 
         System.out.println("Es caracter reservado: " + (esPunto || esAsterisco || esPregunta) );
 
-        return esPunto || esAsterisco || esPregunta;
+        return esPunto || esAsterisco || esPregunta || esMas;
     }
 
     private void primerCaracterEscapeado ( String token ) {
