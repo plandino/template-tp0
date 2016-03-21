@@ -8,15 +8,15 @@ import java.util.Random;
 public class RegExGenerator {
     // TODO: Uncomment this field
     private int maxLength;
-    final private int TAMANIO_ASCII = 256;
+    static final private int TAMANIO_ASCII = 256;
 
     private Random random;
-    final private String CONTRA_BARRA = "\\";
-    final private String PUNTO        = ".";
-    final private String ASTERISCO    = "*";
-    final private String MAS          = "+";
-    final private String PREGUNTA     = "?";
-    final private String CORCHETE     = "[";
+    static final private String CONTRA_BARRA = "\\";
+    static final private String PUNTO        = ".";
+    static final private String ASTERISCO    = "*";
+    static final private String MAS          = "+";
+    static final private String PREGUNTA     = "?";
+    static final private String CORCHETE     = "[";
 
     private String auxString = "";
 
@@ -68,21 +68,6 @@ public class RegExGenerator {
 
                     }
                 }
-
-//                if( )
-//                if(token.equals( PUNTO ) ){
-//                    if( ! auxString.equals( "") ){
-//                        addCharacter( auxString, null );
-//                        addCharacter(token, null );
-//                    } else {
-//                        addCharacter(token, PUNTO );
-//                    }
-//                    continue;
-//                } else {
-//                    auxString += token;
-//                    token = auxString;
-//                }
-
             }
 
             System.out.println("El token es: " + token);
@@ -94,11 +79,6 @@ public class RegExGenerator {
                 lastCharIndex = token.length() - 1;
                 lastChar = token.substring( lastCharIndex );
             }
-
-//            if( token.contains( PUNTO )  ) {
-//                addCharacter( PUNTO, null);
-//                addCharacter( lastChar, null );
-//            }
 
             System.out.println("LastCharIndex: " + lastCharIndex);
             System.out.println("LastChar: " + lastChar);
@@ -118,7 +98,6 @@ public class RegExGenerator {
 
                 if( isASet( token ) ) {
 
-                    // TODO: Ver que no estan backslashed
                     if( token.lastIndexOf( "]" ) + 2 >= token.length() ) {
                         continuacion = token.substring( token.lastIndexOf( "]" ) + 1);
                     } else {
@@ -191,8 +170,6 @@ public class RegExGenerator {
                                 }
 
                             }
-//                        token += lastChar;
-//                        addCharacter( token, set);
                             break;
                     }
                     primeraVez = false;
@@ -227,7 +204,6 @@ public class RegExGenerator {
         }
     }
 
-    // TODO: ver que no esta backslashed
     private boolean isASet( String token ) {
         return token.contains( "[" );
     }
@@ -244,17 +220,4 @@ public class RegExGenerator {
 
         return esPunto || esAsterisco || esPregunta || esMas;
     }
-
-    private void primerCaracterEscapeado ( String token ) {
-        int indexPunto      = token.indexOf( PUNTO );
-        int indexPregunta   = token.indexOf( PREGUNTA );
-        int indexAsterisco  = token.indexOf( ASTERISCO );
-        int indexCorchete   = token.indexOf( CORCHETE );
-        int indexMas        = token.indexOf( MAS );
-
-//        return ( (indexAsterisco == 0 ) )
-//        if( indexAsterisco == 0 || )
-//        isReservedChar( token)
-    }
-
 }
