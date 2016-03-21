@@ -1,9 +1,6 @@
 package ar.fiuba.tdd.template.tp0;
 
-import com.sun.deploy.util.StringUtils;
-
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -209,12 +206,13 @@ public class RegExGenerator {
     }
 
     private void passFromTemporaryListToFinalList() {
-        String completeString = "";
 
-        for(int m = 0; m < listaTemporaria.size() ; m++){
-            completeString += listaTemporaria.get(m);
+        StringBuffer buffer = new StringBuffer();
+
+        for(String token : listaTemporaria){
+            buffer.append(token);
         }
-        lista.add( completeString );
+        lista.add( buffer.toString() );
     }
 
     private void addCharacter( String token, String set) {
