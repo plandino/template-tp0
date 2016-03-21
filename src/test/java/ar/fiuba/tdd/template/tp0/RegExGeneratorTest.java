@@ -163,11 +163,18 @@ public class RegExGeneratorTest {
         assertTrue(validate("sads\\\\?sb", 1));
     }
 
-    // Si toca d en el set, falla, sino anda
+//     Si toca d en el set, falla, sino anda
 //    @Test
 //    public void testBackslashedInsideSet() {
 //        assertTrue(validate("[as\\db]", 1));
 //    }
+
+
+    // Si toca d en el set, falla, sino anda
+    @Test
+    public void testBackslashedCuantifierInsideSet() {
+        assertTrue(validate("[as\\*db]", 1));
+    }
 
 
 //    @Test

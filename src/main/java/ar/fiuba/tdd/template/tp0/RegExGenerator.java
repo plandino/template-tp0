@@ -21,7 +21,7 @@ public class RegExGenerator {
 
     private boolean appendTokens = false;
     private boolean justBackslashed = false;
-    private boolean backslashInsideSet = false;
+    private int cantidadDeTokensASaltear = 0;   // Esto es debido a que tengo que concatenar varios tokens para armar un set
 
     private ArrayList<String> lista;
     private ArrayList<String> listaTemporaria; // En esta se van cargando cada pedazo del string para luego pasar los string completos a la lista
@@ -44,10 +44,10 @@ public class RegExGenerator {
 
             String[] tokens = regEx.split("(?=\\\\)|(?=\\.)|(?<=\\+)|(?<=\\*)|(?<=\\?)|(?=\\[)");
 
-//            System.out.println("Los tokens quedan: " + tokens.length);
+            System.out.println("Hay tantos tokens: " + tokens.length + " son:");
             for (String token : tokens) {
 
-//                System.out.println(token);
+                System.out.println(token);
             }
 
 
@@ -121,10 +121,16 @@ public class RegExGenerator {
                         lastCharDeContinuacion = lastChar;
 
                         if( tokens[i].lastIndexOf( "]" ) < 0 ){
-                            tokens[i] += tokens[i + 1];
-                            tokens[i] = tokens[i].replace(CONTRA_BARRA, "");
+                            int salteos = 1;
+                            while (tokens[i].lastIndexOf( "]" ) < 0) {
+                                tokens[i] += tokens[i + salteos];
+                                salteos++;
+                                tokens[i] = tokens[i].replace(CONTRA_BARRA, "");
+                                cantidadDeTokensASaltear++;
+//                                System.out.println("salteo " + cantidadDeTokensASaltear);
 
-                            backslashInsideSet = true;
+                            }
+
 //                            System.out.println("El token quedo: " + tokens[i]);
 
                         } else {
@@ -203,10 +209,14 @@ public class RegExGenerator {
                     } while (continuacion != null);
                 }
                 justBackslashed = false;
-                if(backslashInsideSet){
-                    backslashInsideSet = false;
+                while ( cantidadDeTokensASaltear > 0 ) {
                     i = i + 1;
+                    cantidadDeTokensASaltear--;
                 }
+//                if(cantidadDeTokensASaltear ){
+//                    backslashInsideSet = false;
+//                    i = i + 1;
+//                }
             }
 
             passFromTemporaryListToFinalList();
