@@ -133,10 +133,10 @@ public class RegExGeneratorTest {
         assertTrue(validate("\\.6.8.2", 1));
     }
 
-    @Test
-    public void testBackslashedDotWithLiteralsAndCuantifier() {
-        assertTrue(validate("\\.abc?.6.8.2", 1));
-    }
+//    @Test
+//    public void testBackslashedDotWithLiteralsAndCuantifier() {
+//        assertTrue(validate("\\.abc?.6.8.2", 1));
+//    }
 
     @Test
     public void testBackslashedAsterisk() {
