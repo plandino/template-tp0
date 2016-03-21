@@ -40,20 +40,20 @@ public class RegExGeneratorTest {
         assertTrue(validate(".", 1));
     }
 
-//    @Test
-//    public void testMultipleCharacters() {
-//        assertTrue(validate("...", 1));
-//    }
+    @Test
+    public void testMultipleCharacters() {
+        assertTrue(validate("...", 1));
+    }
 
     @Test
     public void testLiteral() {
         assertTrue(validate("\\@", 1));
     }
 
-//    @Test
-//    public void testLiteralDotCharacter() {
-//        assertTrue(validate("\\@..", 1));
-//    }
+    @Test
+    public void testLiteralDotCharacter() {
+        assertTrue(validate("\\@..", 1));
+    }
 
     @Test
     public void testZeroOrOneCharacter() {
@@ -108,15 +108,15 @@ public class RegExGeneratorTest {
         assertTrue(validate(".*.*.*", 1));
     }
 
-//    @Test
-//    public void testaaaMultipleAnyaCharacters() {
-//        assertTrue(validate("..5.*", 1));
-//    }
-//
-//    @Test
-//    public void testBackslashedDotWithLiteral() {
-//        assertTrue(validate("\\..5.*", 1));
-//    }
+    @Test
+    public void testMultipleCharactersAndDot() {
+        assertTrue(validate("..5.*", 1));
+    }
+
+    @Test
+    public void testBackslashedDotWithLiteralAndCuantifiers() {
+        assertTrue(validate("\\..5.*", 1));
+    }
 
     @Test
     public void testBackslashedDot() {
@@ -128,28 +128,28 @@ public class RegExGeneratorTest {
         assertTrue(validate("\\5", 1));
     }
 
-//    @Test
-//    public void testDesesperada() {
-//        assertTrue(validate("\\.6.8.2", 1));
-//    }
-//
-//    @Test
-//    public void testComplicada() {
-//        assertTrue(validate("\\.abc?.6.8.2", 1));
-//    }
-//
-//    @Test
-//    public void testEscapeandoAsterisco() {
-//        assertTrue(validate("\\*abc?.6.8.2", 1));
-//    }
-//
-//    @Test
-//    public void testCojuntoQueSigueNormal() {
-//        assertTrue(validate("[asvg]llld", 1));
-//    }
+    @Test
+    public void testBackslashedDotWithLiteral() {
+        assertTrue(validate("\\.6.8.2", 1));
+    }
 
-//    @Test
-//    public void testCojuntoQueSigueNormalConCuantificador() {
-//        assertTrue(validate("[asvg]llld*", 1));
-//    }
+    @Test
+    public void testBackslashedDotWithLiteralsAndCuantifier() {
+        assertTrue(validate("\\.abc?.6.8.2", 1));
+    }
+
+    @Test
+    public void testBackslashedAsterisk() {
+        assertTrue(validate("\\*abc?.6.8.2", 1));
+    }
+
+    @Test
+    public void testSetContinuedWithLiterals() {
+        assertTrue(validate("[asvg]llld", 1));
+    }
+
+    @Test
+    public void testSetContinuedWithLiteralsAndCuantifier() {
+        assertTrue(validate("[asvg]llld*", 1));
+    }
 }
