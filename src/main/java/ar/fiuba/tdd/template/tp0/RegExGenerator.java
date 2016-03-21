@@ -20,6 +20,8 @@ public class RegExGenerator {
     private String auxString = "";
 
     private boolean appendTokens = false;
+    private boolean justBackslashed = false;
+    private boolean backslashInsideSet = false;
 
     private ArrayList<String> lista;
     private ArrayList<String> listaTemporaria; // En esta se van cargando cada pedazo del string para luego pasar los string completos a la lista
@@ -40,12 +42,12 @@ public class RegExGenerator {
             int cantidadDeOcurrencias;
             int minimaCantidadDeOcurrencias = 1;
 
-            String[] tokens = regEx.split("(?=\\.)|(?<=\\+)|(?<=\\*)|(?<=\\?)|(?=\\[)");
+            String[] tokens = regEx.split("(?=\\\\)|(?=\\.)|(?<=\\+)|(?<=\\*)|(?<=\\?)|(?=\\[)");
 
-            System.out.println("Los tokens quedan: " + tokens.length);
+//            System.out.println("Los tokens quedan: " + tokens.length);
             for (String token : tokens) {
 
-                System.out.println(token);
+//                System.out.println(token);
             }
 
 
@@ -53,11 +55,11 @@ public class RegExGenerator {
             for( int i  = 0; i < tokens.length || ( appendTokens ); i++) {
 
                 if (appendTokens) {
+                    justBackslashed = true;
 
                     appendTokens = false;
                     if( i > tokens.length - 1 ) {
                         addCharacter( auxString, null);
-//                        passFromTemporaryListToFinalList();
                         break;
                     } else  if (tokens[i].equals(PUNTO) && auxString.length() == 0) {
                         addCharacter(tokens[i], PUNTO);
@@ -81,7 +83,7 @@ public class RegExGenerator {
                     }
                 }
 
-                System.out.println("El token es: " + tokens[i]);
+//                System.out.println("El token es: " + tokens[i]);
 
                 int lastCharIndex = 1;
                 String lastChar = "";
@@ -91,12 +93,12 @@ public class RegExGenerator {
                     lastChar = tokens[i].substring(lastCharIndex);
                 }
 
-                System.out.println("LastCharIndex: " + lastCharIndex);
-                System.out.println("LastChar: " + lastChar);
+//                System.out.println("LastCharIndex: " + lastCharIndex);
+//                System.out.println("LastChar: " + lastChar);
 
 
-                if (isBackSlashed(tokens[i], lastCharIndex)) {
-                    System.out.println("Es Backslahsed");
+                if (isBackSlashed(tokens[i], lastCharIndex) && ! justBackslashed) {
+//                    System.out.println("Es Backslahsed");
 
                     auxString = tokens[i].replace(CONTRA_BARRA, "");
                     appendTokens = true;
@@ -109,23 +111,37 @@ public class RegExGenerator {
 
                     if (isASet(tokens[i])) {
 
-                        if (tokens[i].lastIndexOf("]") + 2 >= tokens[i].length()) {
+                        if ( tokens[i].lastIndexOf("]") > 0 && tokens[i].lastIndexOf("]") + 2 >= tokens[i].length()) {
                             continuacion = tokens[i].substring(tokens[i].lastIndexOf("]") + 1);
-                        } else {
+                        } else if ( tokens[i].lastIndexOf("]") > 0 ){
                             continuacion = tokens[i].substring(tokens[i].lastIndexOf("]") + 1, tokens[i].length() - 1);
                         }
 
-                        if (isReservedChar(continuacion) || continuacion.equals("")) continuacion = null;
+                        if (continuacion != null && (isReservedChar(continuacion) || continuacion.equals(""))) continuacion = null;
                         lastCharDeContinuacion = lastChar;
 
-                        tokens[i] = tokens[i].substring(tokens[i].indexOf("[") + 1, tokens[i].lastIndexOf("]"));
-                        lastChar = Character.toString(tokens[i].charAt(tokens[i].indexOf("]") + 1));
+                        if( tokens[i].lastIndexOf( "]" ) < 0 ){
+                            tokens[i] += tokens[i + 1];
+                            tokens[i] = tokens[i].replace(CONTRA_BARRA, "");
+
+                            backslashInsideSet = true;
+//                            System.out.println("El token quedo: " + tokens[i]);
+
+                        } else {
+                            tokens[i] = tokens[i].substring(tokens[i].indexOf("[") + 1, tokens[i].lastIndexOf("]"));
+                        }
+                        if( tokens[i].lastIndexOf( "]" ) != tokens[i].length() - 1) {
+                            lastChar = Character.toString(tokens[i].charAt(tokens[i].indexOf("]") + 1));
+                        }
                         set = tokens[i];
+                        set = set.replaceAll( "\\[", "");
+                        set = set.replaceAll( "\\]", "");
+
                     } else {
                         if (tokens[i].length() > 1)
                             tokens[i] = tokens[i].substring(0, lastCharIndex);
                     }
-                    System.out.println("El token quedo: " + tokens[i]);
+//                    System.out.println("El token quedo: " + tokens[i]);
                     boolean primeraVez = true;
                     do {
 
@@ -135,7 +151,7 @@ public class RegExGenerator {
                             continuacion = null;
                             lastChar = lastCharDeContinuacion;
 
-                            System.out.println("El token queasdasddo: " + tokens[i]);
+//                            System.out.println("El token quedo: " + tokens[i]);
 
                         }
 
@@ -186,6 +202,11 @@ public class RegExGenerator {
                         primeraVez = false;
                     } while (continuacion != null);
                 }
+                justBackslashed = false;
+                if(backslashInsideSet){
+                    backslashInsideSet = false;
+                    i = i + 1;
+                }
             }
 
             passFromTemporaryListToFinalList();
@@ -220,14 +241,14 @@ public class RegExGenerator {
         if ( set != null ) {
             char caracter = set.charAt(random.nextInt(set.length()));
             listaTemporaria.add(String.valueOf(caracter));
-            System.out.println("Agregue: " + caracter);
+//            System.out.println("Agregue: " + caracter);
         } else if( token.equals( PUNTO )  ) {
             char caracter = ( char ) random.nextInt( TAMANIO_ASCII );
-            listaTemporaria.add( "a" );
-            System.out.println("Agregue : " + caracter);
+            listaTemporaria.add( String.valueOf(caracter));
+//            System.out.println("Agregue : " + caracter);
         } else {
             listaTemporaria.add( token );
-            System.out.println("Agregue: " + token);
+//            System.out.println("Agregue: " + token);
         }
     }
 
@@ -237,14 +258,19 @@ public class RegExGenerator {
 
     private boolean isReservedChar( String token ) {
 
-        boolean esPunto = ( token.equals( PUNTO ) );
-        boolean esPregunta = ( token.equals( "?" ) );
-        boolean esAsterisco = ( token.equals( "*" ) );
-        boolean esMas = ( token.equals( MAS ) );
+        if(  token != null ) {
+            boolean esPunto = ( token.equals( PUNTO ) );
+            boolean esPregunta = ( token.equals( "?" ) );
+            boolean esAsterisco = ( token.equals( "*" ) );
+            boolean esMas = ( token.equals( MAS ) );
 
 
-        System.out.println("Es caracter reservado: " + (esPunto || esAsterisco || esPregunta) );
+//            System.out.println("Es caracter reservado: " + (esPunto || esAsterisco || esPregunta) );
 
-        return esPunto || esAsterisco || esPregunta || esMas;
+            return esPunto || esAsterisco || esPregunta || esMas;
+        } else {
+            return false;
+        }
+
     }
 }

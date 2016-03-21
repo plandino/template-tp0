@@ -153,6 +153,23 @@ public class RegExGeneratorTest {
         assertTrue(validate("[asvg]llld", 1));
     }
 
+    @Test
+    public void testBackslashedBackslashWithLiterals() {
+        assertTrue(validate("sads\\\\asb", 1));
+    }
+
+    @Test
+    public void testBackslashedBackslashWithLiteralsAndCuantifier() {
+        assertTrue(validate("sads\\\\?sb", 1));
+    }
+
+    // Si toca d en el set, falla, sino anda
+//    @Test
+//    public void testBackslashedInsideSet() {
+//        assertTrue(validate("[as\\db]", 1));
+//    }
+
+
 //    @Test
 //    public void testSetContinuedWithLiteralsAndCuantifier() {
 //        assertTrue(validate("[asvg]llld*", 1));
