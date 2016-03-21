@@ -68,6 +68,10 @@ public class RegExGenerator {
                     } else if (tokens[i].indexOf(PUNTO) == 0 && !isReservedChar(Character.toString(tokens[i].charAt(tokens[i].length() - 1)))) {
                         addCharacter(PUNTO, PUNTO);
                         tokens[i] = tokens[i].substring(1);
+                    } else if ( ! auxString.equals( "" ) && tokens[i].indexOf(PUNTO) == 0 )  {
+                        addCharacter(auxString , null);
+                        addCharacter( PUNTO , null);
+                        tokens[i] = tokens[i].substring(1);
                     } else {
                         if (auxString.length() != 0 && tokens[i].equals(PUNTO)) {
                             addCharacter(auxString, null);
@@ -221,7 +225,7 @@ public class RegExGenerator {
             System.out.println("Agregue: " + caracter);
         } else if( token.equals( PUNTO )  ) {
             char caracter = ( char ) random.nextInt( TAMANIO_ASCII );
-            listaTemporaria.add( String.valueOf(caracter) );
+            listaTemporaria.add( "a" );
             System.out.println("Agregue : " + caracter);
         } else {
             listaTemporaria.add( token );

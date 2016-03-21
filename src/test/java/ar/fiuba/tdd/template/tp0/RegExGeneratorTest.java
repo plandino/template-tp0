@@ -85,7 +85,7 @@ public class RegExGeneratorTest {
 
     @Test
     public void testAnyCharacterWithPlus() {
-        assertTrue(validate(".*", 1));
+        assertTrue(validate(".+", 1));
     }
 
     @Test
@@ -109,8 +109,13 @@ public class RegExGeneratorTest {
 //    }
 
     @Test
-    public void testMultipleCharactersAndDot() {
-        assertTrue(validate("..5f.*", 1));
+    public void testOneLiteralAndDots() {
+        assertTrue(validate("..5.*", 1));
+    }
+
+    @Test
+    public void testMultipleLiteralsAndDots() {
+        assertTrue(validate("..5sadd.*", 1));
     }
 
     @Test
@@ -138,10 +143,10 @@ public class RegExGeneratorTest {
 //        assertTrue(validate("\\.abc?.6.8.2", 1));
 //    }
 
-    @Test
-    public void testBackslashedAsterisk() {
-        assertTrue(validate("\\*abc?.6.8.2", 1));
-    }
+//    @Test
+//    public void testBackslashedAsterisk() {
+//        assertTrue(validate("\\*abc?.6.8.2", 1));
+//    }
 
     @Test
     public void testSetContinuedWithLiterals() {
